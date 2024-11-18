@@ -69,3 +69,44 @@ void LayoutMenu()
 	
 	gotoxy(1,40);	
 }
+
+void Bordas(int ci, int li, int cf, int lf, int corTexto) {
+	int i;
+ 	textcolor(corTexto);
+	gotoxy(ci, li);
+	printf("%c", 201);
+	gotoxy(cf, li);
+	printf("%c", 187);
+	gotoxy(ci, lf);
+	printf("%c", 200);
+	gotoxy(cf, lf);
+	printf("%c", 188);
+
+	for(i=ci+1; i<cf; i++) {
+		gotoxy(i, li);
+		printf("%c", 205);
+		gotoxy(i, lf);
+		printf("%c", 205);
+	}
+
+	for(i=li+1; i<lf; i++) {
+		gotoxy(ci, i);
+		printf("%c", 186);
+		gotoxy(cf, i);
+		printf("%c", 186);
+	}
+	textcolor(7);
+}
+
+void Moldura()
+{
+	int i;
+	
+	Bordas(2,2,141,31,6);//Principal
+	gotoxy(55,3); printf("ESCOLHA UM DOS TEXTOS COMO BASE");
+	textcolor(1);
+	
+	Bordas(4,6,140,8,1);//Mensagem
+	Bordas(4,9,35,30,1);// Menu de Escolha
+	Bordas(36,9,140,30,1);//Menu de Apresentar
+}

@@ -10,7 +10,103 @@
 
 #define TFL 200
 
+char Menu()
+{
+	int c,l;
+	char op;
+	do
+	{
+		LayoutMenu();
+		gotoxy(25,3);
+		printf("############ MENU ############");
+		c=3;
+		l=7;
+		gotoxy(c,l);
+		printf("[A] - Escolher texto");
+		l+=3;
+		gotoxy(c,l);
+		printf("[B] - Codificar frase");
+		l+=3;
+		gotoxy(c,l);
+		printf("[C] - Exibir tabela de palavras");
+		l+=3;
+		gotoxy(c,l);
+		printf("[D] - Exibir arvore");
+		l+=3;
+		gotoxy(c,l);
+		printf("[E] - Exibir tabela e arvore ");
+		l+=3;
+		gotoxy(c,l);
+		printf("[ESC] - Encerrar programa ");
+		l=27;
+		gotoxy(c,l);
+		printf("OPCAO: ");
+		fflush(stdin);
+		op=toupper(getche());
+	}while(op!='A' && op!='B' && op!='C' && op!='D'  && op!='E'  && op!=27 );
+	return op;
+}
 
+void exibeTexto(char selecionado[], int col, int lin){
+	char arq[50]="fraseOriginal", linha[TFL];
+	strcat(arq,selecionado);
+	strcat(arq,".txt");
+	FILE * ponteiro= fopen(arq,"r");
+	fgets(linha,TFL,ponteiro);
+	while(!feof(ponteiro)){
+		gotoxy(col,lin);
+		printf("%s",linha);
+		fgets(linha,TFL,ponteiro);
+		
+		lin++;
+	}
+	fclose(ponteiro);
+}
+
+void escolherArquivo(char arq[]){
+	
+	
+	int c,l;
+	char op,selecionado[2]="1";
+	do
+	{
+		system("cls");
+		Moldura();
+		c=55;
+		l=7;
+		gotoxy(c,l);
+		printf("O texto selecionado eh %s",selecionado);
+		exibeTexto(selecionado,40,10);
+		c=5;
+		l=12;
+		gotoxy(c,l);
+		printf("[1] - Primeiro texto");
+		l+=3;
+		gotoxy(c,l);
+		printf("[2] - Segundo texto");
+		l+=3;
+		gotoxy(c,l);
+		printf("[3] - Terceiro texto");
+		l+=3;
+		gotoxy(c,l);
+		printf("[ENTER] Confirmar texto atual ");
+		l=27;
+		gotoxy(c,l);
+		printf("OPCAO: ");
+		fflush(stdin);
+		op=toupper(getche());
+		if(op=='1')
+			strcpy(selecionado,"1");
+		else{
+			if(op=='2')
+				strcpy(selecionado,"2");
+			else
+				if(op=='3')
+					strcpy(selecionado,"3");
+		}
+	}while(op!=13 );
+	strcat(arq,selecionado);
+}
 
 void recebePalavras(Tabela **tab,char linha[]){
 	int tl,i=0;
@@ -29,9 +125,9 @@ void recebePalavras(Tabela **tab,char linha[]){
 	}
 }
 
-void recebeFrase(Tabela **tab){
+void recebeFrase(Tabela **tab,char arq[]){
 	char linha[TFL];
-	FILE *ponteiro=fopen("fraseOriginal.txt","r");
+	FILE *ponteiro=fopen(arq,"r");
 	fgets(linha,TFL,ponteiro);
 	while(!feof(ponteiro)){
 		recebePalavras(&*tab,linha);
@@ -239,18 +335,51 @@ void executar(){
 	Floresta *floresta;
 	Tree *raiz;
 	init(&tab);
-	recebeFrase(&tab);
-	ordenarFrequencia(&tab);//Exclui os nós e insere de forma ordenada 
-	CriaFloresta(&floresta,tab);
-	CriarArvoreHuffman(&floresta);
-	raiz=floresta->no;
-	free(floresta);
-	system("cls");
-	exibeArvore(raiz,-1);
-	printf("\n\n");
-	gerarCodigoHuffman(tab,raiz);
-	system("cls");
-	exibirTabela(tab,1,1);
+	initTree(&raiz);
+	initFloresta(&floresta);
+	char op,arq[50];
+	do{
+		op=Menu();
+		switch(op){
+			case 'A':
+				mataFloresta(&floresta);
+				mataArvore(&raiz);
+				mataTabela(&tab);
+				strcpy(arq,"fraseOriginal");
+				escolherArquivo(arq);
+				strcat(arq,".txt");
+				recebeFrase(&tab,arq);
+				ordenarFrequencia(&tab);//Exclui os nós e insere de forma ordenada 
+				CriaFloresta(&floresta,tab);
+				CriarArvoreHuffman(&floresta);
+				raiz=floresta->no;
+				free(floresta);
+				gerarCodigoHuffman(tab,raiz);
+				break;
+			case 'B':
+				break;
+			case 'C':
+				system("cls");
+				exibirTabela(tab,1,1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'D':
+				system("cls");
+				exibeArvore(raiz,-1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'E':
+				break;
+		}
+		
+	}while(op!=13);
+	
+
+	
+	
+
 	codificarFrase(tab);
 	teste();
 	gravarRegistros(&tab);
