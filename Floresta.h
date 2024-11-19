@@ -50,6 +50,16 @@ char isEmptyFloresta(Floresta *f){
 	return f==NULL;
 }
 
+void mataFloresta(Floresta **floresta){
+	Floresta *aux;
+	while(*floresta!=NULL){
+		aux=*floresta;
+		*floresta=aux->prox;
+		if(aux->no !=NULL)
+			free (aux->no);
+		free (aux);
+	}
+}
 
 void exibeFloresta(Floresta *f){
 	while(f!=NULL){

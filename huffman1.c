@@ -37,13 +37,19 @@ char Menu()
 		printf("[E] - Exibir tabela e arvore ");
 		l+=3;
 		gotoxy(c,l);
-		printf("[ESC] - Encerrar programa ");
+		printf("[F] - Ver frase codificada ");
+		l+=3;
+		gotoxy(c,l);
+		printf("[ESC] - Encerrar programa e");
+		l++;
+		gotoxy(c+8,l);
+		printf("Gravar registros");
 		l=27;
 		gotoxy(c,l);
 		printf("OPCAO: ");
 		fflush(stdin);
 		op=toupper(getche());
-	}while(op!='A' && op!='B' && op!='C' && op!='D'  && op!='E'  && op!=27 );
+	}while(op!='A' && op!='B' && op!='C' && op!='D'  && op!='E' && op!='F' && op!=27 );
 	return op;
 }
 
@@ -63,11 +69,11 @@ void exibeTexto(char selecionado[], int col, int lin){
 	fclose(ponteiro);
 }
 
-void escolherArquivo(char arq[]){
+void escolherArquivo(char arq[],char selecionado[]){
 	
 	
 	int c,l;
-	char op,selecionado[2]="1";
+	char op;
 	do
 	{
 		system("cls");
@@ -249,19 +255,27 @@ char pegaBits(char cod[TFC]){
 	return b.cod;
 }
 
-void codificarFrase(Tabela *tab){
+void codificarFrase(Tabela *tab,char selecionado[]){
 	Byte b;
+	char frase[TFL],arq[50]="frase";
+	strcat(arq,selecionado);
+	strcat(arq,".txt");
 	FILE * ponteiro = fopen("codigoHuffman.dat","wb");
+	FILE * ptrLer = fopen(arq,"r");
+	fgets(frase,TFL,ptrLer);
+	fclose(ptrLer);
 	int i,tl,j=0,k;
 	Tabela *aux;
-	char flag=0,frase[TFL] = "O sol brilhava no ceu azul",palavra[TFL],codigo[TFC];
+	char flag=0,palavra[TFL],codigo[TFC];
 	codigo[8]='\0';
 	for(i=0;i<strlen(frase);i++){
-		for(tl=0;i<strlen(frase) && frase[i]!=' ';i++,tl++)
+		for(tl=0;i<strlen(frase) && frase[i]!=' ' &&  frase[i]!='\n';i++,tl++)
 			palavra[tl]=frase[i];
 		palavra[tl]='\0';
 		BuscarPalavra(tab,palavra,&aux);
 		k=0;
+		printf("%s - ",palavra);
+		printf("%s\n",aux->info.codigo);
 		while(k<strlen(aux->info.codigo)){
 			codigo[j]=aux->info.codigo[k];
 			k++;
@@ -273,12 +287,13 @@ void codificarFrase(Tabela *tab){
 				flag=0;
 			}
 		}
-		
 		if(frase[i]==' '){
 			palavra[0]=' ';
 			palavra[1]='\0';
 			BuscarPalavra(tab,palavra,&aux);
 			k=0;
+			printf("'Espaco' - ",palavra);
+			printf("%s\n",aux->info.codigo);
 			while(k<strlen(aux->info.codigo)){
 				codigo[j]=aux->info.codigo[k];
 				k++;
@@ -289,7 +304,8 @@ void codificarFrase(Tabela *tab){
 					flag=0;
 				}
 			}
-		}	
+		}
+		
 	}
 	if(j>0){
 		for(;j<8;j++)
@@ -298,26 +314,9 @@ void codificarFrase(Tabela *tab){
 		fwrite(&b.cod,sizeof(char),1,ponteiro);
 	}
 	fclose(ponteiro);
-	
+	printf("\n\tCodificado com sucesso!!");
 }
 
-void teste(){// Teste para mostrar os bytes armazenados
-	FILE * ponteiro=fopen("codigoHuffman.dat","rb");
-	Byte b;
-	fread(&b.cod,sizeof(char),1,ponteiro);
-	while(!feof(ponteiro)){
-		printf("%d",b.bit.b0);
-		printf("%d",b.bit.b1);
-		printf("%d",b.bit.b2);
-		printf("%d",b.bit.b3);
-		printf("%d",b.bit.b4);
-		printf("%d",b.bit.b5);
-		printf("%d",b.bit.b6);
-		printf("%d\n",b.bit.b7);
-		fread(&b.cod,sizeof(char),1,ponteiro);
-	}
-	fclose(ponteiro);
-}
 
 void gravarRegistros(Tabela **tab){
 	FILE * ponteiro=fopen("registros.dat","wb");
@@ -337,7 +336,7 @@ void executar(){
 	init(&tab);
 	initTree(&raiz);
 	initFloresta(&floresta);
-	char op,arq[50];
+	char op,arq[50],selecionado[2]="1";
 	do{
 		op=Menu();
 		switch(op){
@@ -345,8 +344,11 @@ void executar(){
 				mataFloresta(&floresta);
 				mataArvore(&raiz);
 				mataTabela(&tab);
+				init(&tab);
+				initTree(&raiz);
+				initFloresta(&floresta);
 				strcpy(arq,"fraseOriginal");
-				escolherArquivo(arq);
+				escolherArquivo(arq,selecionado);
 				strcat(arq,".txt");
 				recebeFrase(&tab,arq);
 				ordenarFrequencia(&tab);//Exclui os nós e insere de forma ordenada 
@@ -357,6 +359,10 @@ void executar(){
 				gerarCodigoHuffman(tab,raiz);
 				break;
 			case 'B':
+				system("cls");
+				codificarFrase(tab,selecionado);
+				fflush(stdin);
+				getch();
 				break;
 			case 'C':
 				system("cls");
@@ -371,18 +377,27 @@ void executar(){
 				getch();
 				break;
 			case 'E':
+				system("cls");
+				exibirTabela(tab,1,1);
+				exibeArvore(raiz,-1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'F':
+				system("cls");
+				teste();
+				exibirTabela(tab,1,4);
+				gotoxy(1,1);
+				fflush(stdin);
+				getch();
 				break;
 		}
 		
-	}while(op!=13);
+	}while(op!=27);
 	
 
-	
-	
-
-	codificarFrase(tab);
-	teste();
 	gravarRegistros(&tab);
+	mataArvore(&raiz);
 }
 
 int main(){

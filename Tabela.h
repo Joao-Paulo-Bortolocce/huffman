@@ -115,6 +115,15 @@ void removeTabela(Tabela **t,TpInfo *info){
 	free (aux);
 }
 
+void mataTabela(Tabela **tab){
+	Tabela *aux;
+	while(*tab!=NULL){
+		aux=*tab;
+		*tab=aux->prox;
+		free (aux);
+	}
+}
+
 void exibirTabela(Tabela *t, int colunaInicial, int linhaInicial){
 
 	int i, j, vet[4],aux;
@@ -264,3 +273,20 @@ void exibirTabela(Tabela *t, int colunaInicial, int linhaInicial){
     printf("%c", 188); // Canto inferior direito
 }
 
+void teste(){// Teste para mostrar os bytes armazenados
+	FILE * ponteiro=fopen("codigoHuffman.dat","rb");
+	Byte b;
+	fread(&b.cod,sizeof(char),1,ponteiro);
+	while(!feof(ponteiro)){
+		printf("%d",b.bit.b0);
+		printf("%d",b.bit.b1);
+		printf("%d",b.bit.b2);
+		printf("%d",b.bit.b3);
+		printf("%d",b.bit.b4);
+		printf("%d",b.bit.b5);
+		printf("%d",b.bit.b6);
+		printf("%d  ",b.bit.b7);
+		fread(&b.cod,sizeof(char),1,ponteiro);
+	}
+	fclose(ponteiro);
+}

@@ -2,11 +2,46 @@
 #include<stdio.h>
 #include<string.h>
 
+#include"Layout.h"
 #include"Arvore.h"
 #include"Floresta.h"
 #include"Tabela.h"
 
 #define TFL 200
+
+char Menu()
+{
+	int c,l;
+	char op;
+	do
+	{
+		LayoutMenu();
+		gotoxy(25,3);
+		printf("############ MENU ############");
+		c=3;
+		l=7;
+		gotoxy(c,l);
+		printf("[A] - Exibir tabela de palavras");
+		l+=3;
+		gotoxy(c,l);
+		printf("[B] - Exibir arvore");
+		l+=3;
+		gotoxy(c,l);
+		printf("[C] - Ver frase decodificada");
+		l+=3;
+		gotoxy(c,l);
+		printf("[D] - Ver frase codificada");
+		l+=3;
+		gotoxy(c,l);
+		printf("[ESC] - Encerrar programa");
+		l=27;
+		gotoxy(c,l);
+		printf("OPCAO: ");
+		fflush(stdin);
+		op=toupper(getche());
+	}while(op!='A' && op!='B' && op!='C' && op!='D'  && op!='E' && op!='F' && op!=27 );
+	return op;
+}
 
 void montarTabela(Tabela **tab){
 	FILE * ponteiro= fopen("registros.dat","rb");
@@ -16,7 +51,6 @@ void montarTabela(Tabela **tab){
 		inserirTabelaOrd(&*tab,info);
 		fread(&info,sizeof(TpInfo),1,ponteiro);
 	}
-	exibirTabela(*tab,1,1);
 	fclose(ponteiro);
 }
 
@@ -60,10 +94,10 @@ void trim(char frase[]){
 	frase[i+1]='\0';
 }
 
-void decodificarHuffman(Tree *raiz,Tabela *tab){
+void decodificarHuffman(Tree *raiz,Tabela *tab,char  frase[TFL]){
 	Tree *aux;
 	Tabela *tabAux;
-	char frase[TFL]="",codigo[TFC];
+	char codigo[TFC];
 	int i;
 	FILE *ponteiro=fopen("codigoHuffman.dat","rb");
 	Byte byte;
@@ -91,14 +125,53 @@ void decodificarHuffman(Tree *raiz,Tabela *tab){
 }
 
 void executar(){
+	char op,frase[TFL];
 	Tabela *tab;
 	Tree *raiz;
 	init(&tab);
 	initTree(&raiz);
 	montarTabela(&tab);
 	montarArvore(&raiz,tab);
-	exibeArvore(raiz,-1);
-	decodificarHuffman(raiz,tab);
+	strcpy(frase,"");
+	decodificarHuffman(raiz,tab,frase);
+	do{
+		op=Menu();
+		switch(op){
+			case 'A':
+				system("cls");
+				exibirTabela(tab,1,1);
+				gotoxy(1,1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'B':
+				system("cls");
+				exibeArvore(raiz,-1);
+				gotoxy(1,1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'C':
+				system("cls");
+				printf("A frase decodificada foi:\n %s\n ",frase);
+				teste();
+				exibirTabela(tab,1,4);
+				gotoxy(1,1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'D':
+				system("cls");
+				teste();
+				exibirTabela(tab,1,4);
+				gotoxy(1,1);
+				fflush(stdin);
+				getch();
+				break;
+		}
+			
+	}while(op!=27);
+	
 }
 
 

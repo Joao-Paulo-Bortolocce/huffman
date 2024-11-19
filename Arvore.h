@@ -21,6 +21,14 @@ void criaNo(Tree **t, int frequencia, int simbolo){
 	(*t)->simbolo=simbolo;
 }
 
+void mataArvore(Tree **raiz){
+	if(*raiz!=NULL){
+		mataArvore(&(*raiz)->esq);
+		mataArvore(&(*raiz)->dir);
+		free(*raiz);
+	}
+}
+
 void exibeArvore(Tree *raiz, int n){
 	int i;
 	if(raiz!=NULL){
@@ -32,3 +40,5 @@ void exibeArvore(Tree *raiz, int n){
 		exibeArvore(raiz->esq,n);
 	}
 }
+
+
