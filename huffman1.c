@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include<conio2.h>
 
 #include"Layout.h"
 #include"Arvore.h"
@@ -40,16 +41,19 @@ char Menu()
 		printf("[F] - Ver frase codificada ");
 		l+=3;
 		gotoxy(c,l);
+		printf("[G] - Exibir arvore em pe");
+		l+=3;
+		gotoxy(c,l);
 		printf("[ESC] - Encerrar programa e");
 		l++;
 		gotoxy(c+8,l);
 		printf("Gravar registros");
-		l=27;
-		gotoxy(c,l);
+		l=29;
+		gotoxy(40,l);
 		printf("OPCAO: ");
 		fflush(stdin);
 		op=toupper(getche());
-	}while(op!='A' && op!='B' && op!='C' && op!='D'  && op!='E' && op!='F' && op!=27 );
+	}while(op!='A' && op!='B' && op!='C' && op!='D'  && op!='E' && op!='F' && op!='G' && op!=27 );
 	return op;
 }
 
@@ -351,7 +355,6 @@ void executar(){
 		op=Menu();
 		switch(op){
 			case 'A':
-				mataFloresta(&floresta);
 				mataArvore(&raiz);
 				mataTabela(&tab);
 				init(&tab);
@@ -366,6 +369,7 @@ void executar(){
 				CriarArvoreHuffman(&floresta);
 				raiz=floresta->no;
 				free(floresta);
+				initFloresta(&floresta);
 				gerarCodigoHuffman(tab,raiz);
 				break;
 			case 'B':
@@ -399,6 +403,12 @@ void executar(){
 				teste();
 				exibirTabela(tab,1,4);
 				gotoxy(1,1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'G':
+				system("cls");
+				printaEmPe(raiz,1,1);
 				fflush(stdin);
 				getch();
 				break;

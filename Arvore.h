@@ -36,9 +36,33 @@ void exibeArvore(Tree *raiz, int n){
 		exibeArvore(raiz->dir,n);
 		for(i=0;i<5*n;i++)
 			printf(" ");
-		printf("(%d, %d)\n",raiz->simbolo,raiz->frequencia);
+		if(raiz->frequencia==0)
+        	printf("(%d)\n", raiz->simbolo);
+        else
+			printf("(%d, %d)\n",raiz->simbolo,raiz->frequencia);
 		exibeArvore(raiz->esq,n);
 	}
+}
+
+int contaFilhos(Tree *raiz) {
+    if (raiz == NULL)
+        return 0;
+    return 1 + contaFilhos(raiz->esq) + contaFilhos(raiz->dir);
+}
+
+void printaEmPe(Tree *raiz, int l, int ci) {
+    if (raiz != NULL) {
+        int c_esq = contaFilhos(raiz->esq);
+        float posicao_atual = ci + 4.3 * c_esq;
+        gotoxy((int)posicao_atual, l);
+        if(raiz->frequencia==0)
+        	printf("(%d)", raiz->simbolo);
+        else
+        	printf("(%d,%d)", raiz->simbolo, raiz->frequencia);
+        printaEmPe(raiz->esq, l + 2, ci);              
+        printaEmPe(raiz->dir, l + 2, posicao_atual + 7); 
+    }
+	
 }
 
 

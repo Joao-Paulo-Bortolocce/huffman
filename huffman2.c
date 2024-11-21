@@ -33,6 +33,9 @@ char Menu()
 		printf("[D] - Ver frase codificada");
 		l+=3;
 		gotoxy(c,l);
+		printf("[E] - Exibir arvore em pe");
+		l+=3;
+		gotoxy(c,l);
 		printf("[ESC] - Encerrar programa");
 		l=27;
 		gotoxy(c,l);
@@ -164,6 +167,13 @@ void executar(){
 				system("cls");
 				teste();
 				exibirTabela(tab,1,4);
+				gotoxy(1,1);
+				fflush(stdin);
+				getch();
+				break;
+			case 'E':
+				system("cls");
+				printaEmPe(raiz,1,1);
 				gotoxy(1,1);
 				fflush(stdin);
 				getch();
