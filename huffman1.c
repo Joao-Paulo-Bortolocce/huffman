@@ -67,6 +67,16 @@ void exibeTexto(char selecionado[], int col, int lin){
 		lin++;
 	}
 	fclose(ponteiro);
+	
+	strcpy(arq,"frase");
+	strcat(arq,selecionado);
+	strcat(arq,".txt");
+	ponteiro= fopen(arq,"r");
+	fgets(linha,TFL,ponteiro);
+	gotoxy(col,29);
+	printf("FRASE QUE SERA CODIFICADA: %s",linha);
+	fclose(ponteiro);
+	
 }
 
 void escolherArquivo(char arq[],char selecionado[]){
@@ -379,6 +389,7 @@ void executar(){
 			case 'E':
 				system("cls");
 				exibirTabela(tab,1,1);
+				printf("\n\n");
 				exibeArvore(raiz,-1);
 				fflush(stdin);
 				getch();
