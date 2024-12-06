@@ -4,7 +4,6 @@
 
 #include"Layout.h"
 #include"Arvore.h"
-#include"Floresta.h"
 #include"Tabela.h"
 
 #define TFL 200
@@ -181,11 +180,13 @@ void executar(){
 		}
 			
 	}while(op!=27);
-	
+	mataTabela(&tab);
+	mataArvore(&raiz);
 }
 
 
 int main(){
 	executar();
+	
 	return 0;
 }

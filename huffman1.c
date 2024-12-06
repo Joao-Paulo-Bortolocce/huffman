@@ -322,8 +322,9 @@ void codificarFrase(Tabela *tab,char selecionado[]){
 		
 	}
 	if(j>0){
+		BuscarPalavra(tab," ",&aux);
 		for(;j<8;j++)
-			codigo[j]='0';
+			codigo[j]=aux->info.codigo[0];
 		b.cod=pegaBits(codigo);
 		fwrite(&b.cod,sizeof(char),1,ponteiro);
 	}
